@@ -8,6 +8,19 @@ reconfigure;
 
 CREATE MASTER KEY ENCRYPTION BY PASSWORD = ''
 
+
+CREATE DATABASE SCOPED CREDENTIAL [zzDemoCredential01_MI]  WITH IDENTITY = 'Managed Identity'
+
+CREATE EXTERNAL DATA SOURCE zzsqladlstest0001_V01
+WITH (
+	LOCATION = 'abs://tpch-sf1000-consolidated@tpchdata02.blob.core.windows.net/',
+    CREDENTIAL = [zzDemoCredential01_MI] 
+)
+SELECT TOP 10 * FROM OPENROWSET(BULK 'NATION/*', DATA_SOURCE = 'zzsqladlstest0001_V01', FORMAT = 'parquet') AS filerows
+
+
+
+
 CREATE DATABASE SCOPED CREDENTIAL [zzDemoCredential01]
 WITH IDENTITY = 'SHARED ACCESS SIGNATURE',
 SECRET = 'sv=2020-08-04&ss';
